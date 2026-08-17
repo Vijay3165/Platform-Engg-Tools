@@ -394,6 +394,54 @@ M1 → M2 → M3 → M4
 
 > **Partition = an ordered sequence of records inside a topic that enables scalability and parallel processing.**
 
+## Important clarification: partitions do not contain the same data
+
+A common misunderstanding is that every partition of a topic stores the same messages. In Kafka, partitions contain different subsets of the topic's data.
+
+Example:
+
+```text
+Topic: orders
+
+Partition 0 → A, D, G
+Partition 1 → B, E, H
+Partition 2 → C, F, I
+```
+
+So:
+
+- A topic is divided into multiple partitions.
+- The data is distributed across those partitions.
+- Within the same consumer group, only one consumer consumes a given partition at a time.
+- Different consumers can process different partitions in parallel.
+
+This is different from replication.
+
+- Partitioning divides the data.
+- Replication copies the data for fault tolerance.
+
+Example:
+
+```text
+Partition 0 → A, D, G
+Partition 1 → B, E, H
+Partition 2 → C, F, I
+```
+
+Replicas of a partition contain copies of that partition's data:
+
+```text
+P0 leader   → A, D, G
+P0 replica  → A, D, G
+P0 replica  → A, D, G
+```
+
+### Key distinction
+
+> **Partition = divides the data**
+>
+> **Replica = copies the data**
+
 ---
 
 # 7. Offset
